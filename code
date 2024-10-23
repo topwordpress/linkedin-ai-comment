@@ -1,0 +1,122 @@
+(async () => {
+  // Helper function to wait for a given time (in milliseconds)
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  // Helper function to safely query an element, with retries
+  const safeQuery = async (parent, selector, retries = 5, interval = 1000) => {
+    let element = null;
+    while (retries > 0) {
+      element = parent.querySelector(selector);
+      if (element) break;
+      await wait(interval);
+      retries--;
+    }
+    return element;
+  };
+
+  // Function to scroll the page to the given element
+  const scrollToElement = (element) => {
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  // Function to auto-scroll the page to load more posts
+  const autoScroll = async (targetPosts) => {
+    let postContainers = document.querySelectorAll('div.feed-shared-update-v2');
+    while (postContainers.length < targetPosts) {
+      window.scrollTo(0, document.body.scrollHeight); // Scroll to the bottom of the page
+      await wait(2000); // Wait for more posts to load
+      postContainers = document.querySelectorAll('div.feed-shared-update-v2');
+    }
+    return postContainers;
+  };
+
+  // Total number of posts we want to process (50 in total)
+  const totalPosts = 50;
+  const batchSize = 25;
+
+  console.log(`Starting the process for up to ${totalPosts} posts.`);
+
+  // Process posts in batches of 25
+  for (let batch = 0; batch < totalPosts / batchSize; batch++) {
+    console.log(`Loading batch ${batch + 1}...`);
+
+    // Load the posts
+    let postContainers = await autoScroll((batch + 1) * batchSize);
+    postContainers = Array.from(postContainers).slice(batch * batchSize, (batch + 1) * batchSize);
+
+    for (let i = 0; i < postContainers.length; i++) {
+      let post = postContainers[i];
+      console.log(`Processing post ${i + 1 + batch * batchSize}...`);
+
+      // Scroll to the post being interacted with
+      scrollToElement(post);
+      await wait(2000); // Wait for the scroll to complete
+
+      // 1. Find and click the like button in the post
+      let likeButton = await safeQuery(post, 'span.artdeco-button__text.react-button__text');
+      if (likeButton) {
+        console.log(`Clicking like button for post ${i + 1 + batch * batchSize}`);
+        likeButton.click();
+      } else {
+        console.error(`Like button not found for post ${i + 1 + batch * batchSize}, skipping...`);
+        continue; // Skip to the next post if no like button is found
+      }
+
+      // 2. Wait for 5 seconds
+      await wait(5000);
+
+      // 3. Find and click the comment button in the post
+      let commentButton = await safeQuery(post, 'button.comment-button');
+      if (commentButton) {
+        console.log(`Clicking comment button for post ${i + 1 + batch * batchSize}`);
+        commentButton.click();
+      } else {
+        console.error(`Comment button not found for post ${i + 1 + batch * batchSize}, skipping...`);
+        continue; // Skip to the next post if no comment button is found
+      }
+
+      // 4. Wait for the comment box to appear and engage with the post
+      await wait(3000);
+      let engageButton = await safeQuery(post, 'button.engage-post');
+      if (engageButton) {
+        console.log("Clicking engage with this post button");
+        engageButton.click();
+      } else {
+        console.error("Engage button not found, skipping...");
+        continue; // Skip to the next post if no engage button is found
+      }
+
+      // 5. Wait for 5 seconds
+      await wait(5000);
+
+      // 6. Find and click the "Generate" button
+      let generateButton = await safeQuery(post, 'button.tone-item.generate');
+      if (generateButton) {
+        console.log("Clicking generate comment button");
+        generateButton.click();
+      } else {
+        console.error("Generate button not found, skipping...");
+        continue; // Skip to the next post if no generate button is found
+      }
+
+      // 7. Wait for 25 seconds
+      await wait(25000);
+
+      // 8. Find and click the "Submit Comment" button
+      let submitButton = await safeQuery(post, 'button.comments-comment-box__submit-button--cr');
+      if (submitButton) {
+        console.log("Clicking submit comment button");
+        submitButton.click();
+      } else {
+        console.error("Submit comment button not found, skipping...");
+      }
+
+      // Wait before moving to the next post
+      await wait(9000); // Wait 9 seconds between posts
+    }
+
+    console.log(`Finished processing batch ${batch + 1}.`);
+  }
+
+  console.log(`Finished liking and commenting on up to ${totalPosts} posts.`);
+})();
