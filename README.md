@@ -1,8 +1,12 @@
-**Description:** This advanced JavaScript asynchronous script is designed to facilitate automated engagement on social media platforms with similar HTML structures, such as LinkedIn. By intelligently scrolling through the feed, it automatically likes and comments on posts to enhance interaction and visibility. The script employs a robust error-handling mechanism, utilizing safe querying to ensure elements are present before actions are taken, thus improving reliability. It features adjustable batch processing, which allows users to specify the number of posts they wish to engage with in batches of customizable sizes. Detailed logging is incorporated throughout the script to provide real-time feedback on which posts are being processed, whether actions like liking, commenting, or generating content are successful, and which elements are not found, allowing for easy debugging.
+### Headline:
+Automated Engagement Script for LinkedIn Posts
 
-**Usage Details:** 
-1. To get started, copy the script and paste it into the developer console of your browser while navigated to the target social media page.
-2. Set the `totalPosts` variable at the beginning of the script to define how many posts you want to engage with (default is 50, but this can be increased or decreased based on your needs).
-3. Modify the `batchSize` variable to configure how many posts the script should process in one cycle (the default is 25).
-4. Execute the script to commence the automated engagement process. The script will systematically scroll down the feed, loading and processing posts in the defined batches. It will like each post, attempt to leave a comment, generate a comment based on user interaction, and finally submit the comment. 
-5. Make sure the script complies with the platform's guidelines to avoid any restrictions or bans. Be cautious about rate limits; the waits built into the script help mitigate this, but it's important to monitor the performance and adjust parameters if necessary. This tool is perfect for users looking to enhance their social media presence through efficient automated interactions.
+### Description:
+This script automates the process of liking and commenting on LinkedIn posts using the Engage AI ChatGPT extension. Before running the script, ensure to install the Chrome extension from [here](https://chromewebstore.google.com/detail/engage-ai-chatgpt-for-soc/nelhhkchoapcbpcgpmmiahfkcdhgecaf). Once set up, simply navigate to your LinkedIn feed, open your browser console, and execute the script to process up to 50 posts, liking and generating comments automatically.
+
+### How to Use:
+1. Install the Engage AI ChatGPT Chrome extension.
+2. Go to the LinkedIn feed page.
+3. Open the Chrome Developer Console (Ctrl + Shift + J).
+4. Copy and paste the script into the console and press Enter.
+5. The script will start liking and commenting on the specified number of posts (default is 50). Monitor the console for updates on progress and any skipped posts due to missing elements. Enjoy the automated engagement!
